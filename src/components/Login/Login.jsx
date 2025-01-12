@@ -1,12 +1,20 @@
-import React, { useState } from "react";
-import { supabase } from "../supabaseClient";
+import React, { useEffect, useState } from "react";
+import { supabase } from "../../supabaseClient";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading && user) {
+      navigate("/");
+    }
+  }, [user, loading, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -18,7 +26,7 @@ function Login() {
     if (error) {
       setError(error.message);
     } else {
-      navigate("/dashboard");
+      navigate("/");
     }
   };
 
