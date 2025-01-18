@@ -41,8 +41,8 @@ const ProductsTable = () => {
   ];
 
   function onCloseModal() {
-    setOpenModal(false);
     setCurrentProduct(null);
+    setOpenModal(false);
   }
 
   function handleEdit(product) {

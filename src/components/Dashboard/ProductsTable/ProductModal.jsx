@@ -14,7 +14,6 @@ const ProductModal = ({ openModal, onCloseModal, product }) => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    console.log(product);
     if (product) {
       setFormData({
         name: product.name,
@@ -30,11 +29,10 @@ const ProductModal = ({ openModal, onCloseModal, product }) => {
         price: "",
       });
     }
-  }, [product]);
+  }, [product, openModal]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(name);
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
