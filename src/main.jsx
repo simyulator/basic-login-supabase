@@ -6,15 +6,20 @@ import { BrowserRouter } from "react-router-dom";
 import ErrorBoundary from "./utils/ErrorBoundary.jsx";
 import ErrorPage from "./components/ErrorPage/ErrorPage.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <ErrorBoundary fallback={<ErrorPage />}>
-      <AuthProvider>
+    <AuthProvider>
+      <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <App />
+          <ErrorBoundary fallback={<ErrorPage />}>
+            <App />
+          </ErrorBoundary>
         </BrowserRouter>
-      </AuthProvider>
-    </ErrorBoundary>
+      </QueryClientProvider>
+    </AuthProvider>
   </StrictMode>
 );
