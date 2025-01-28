@@ -1,20 +1,18 @@
 import { Button, Table } from "flowbite-react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { supabase } from "../../../supabaseClient";
 import ProductModal from "./ProductModal";
 import { fetchProducts } from "../../../APIServices/APIServices";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { Product } from "../../../types/Product";
 
-const ProductsTable = () => {
-  const [openModal, setOpenModal] = useState(false);
-  const [currentProduct, setCurrentProduct] = useState(null);
-  const {
-    isError,
-    isSuccess,
-    isLoading,
-    data: productsList,
-    error,
-  } = useQuery(["products"], fetchProducts);
+const ProductsTable: React.FC = () => {
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
+  const { isLoading, data: productsList } = useQuery<Product[], Error>(
+    ["products"],
+    fetchProducts
+  );
   const queryClient = useQueryClient();
 
   const columns = [
@@ -45,13 +43,13 @@ const ProductsTable = () => {
     setOpenModal(false);
   }
 
-  function handleEdit(product) {
+  function handleEdit(product: Product) {
     setCurrentProduct(product);
     setOpenModal(true);
   }
 
   const deleteProduct = useMutation(
-    async (productId) => {
+    async (productId: number) => {
       const { error } = await supabase
         .from("apple_products")
         .delete()
@@ -67,7 +65,7 @@ const ProductsTable = () => {
     }
   );
 
-  async function handleDelete(productId) {
+  async function handleDelete(productId: number) {
     deleteProduct.mutate(productId);
   }
 
@@ -77,10 +75,17 @@ const ProductsTable = () => {
 
   return (
     <div className="overflow-x-auto ">
-      <Button className="my-4" color="blue" onClick={() => setOpenModal(true)}>
-        Add Product
-      </Button>
-      <Table striped hoverable>
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-semibold text-blue-600">Products</h1>
+        <Button
+          className="my-4"
+          color="blue"
+          onClick={() => setOpenModal(true)}
+        >
+          Add Product
+        </Button>
+      </div>
+      <Table hoverable>
         <Table.Head>
           {columns.map((column) => {
             return (
