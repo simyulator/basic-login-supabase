@@ -5,9 +5,9 @@ import { Sidebar } from "flowbite-react";
 import { FaHome, FaBox, FaCog, FaSignOutAlt } from "react-icons/fa";
 
 const menuItems = [
-  { label: "Dashboard", link: "#", icon: FaHome },
-  { label: "Products", link: "#", icon: FaBox },
-  { label: "Settings", link: "#", icon: FaCog },
+  { label: "Dashboard", link: "/", icon: FaHome },
+  { label: "Products", link: "/products", icon: FaBox },
+  { label: "Settings", link: "/settings", icon: FaCog },
 ];
 
 const NavigationSidebar: React.FC = () => {

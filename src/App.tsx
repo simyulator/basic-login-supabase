@@ -17,3 +17,8 @@ const App: React.FC = () => {
 };
 
 export default App;
+
+// react query library for fetch api calls of supabase
+// table with crud operations (Books)
+// book name, description, rating,
+// flowbite react library for ui components
