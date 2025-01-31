@@ -4,7 +4,7 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import ProtectedRoutes from "./utils/ProtectedRoutes";
 import Login from "./components/Login/Login";
 
-function App() {
+const App: React.FC = () => {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
@@ -14,7 +14,7 @@ function App() {
       </Route>
     </Routes>
   );
-}
+};
 
 export default App;
 

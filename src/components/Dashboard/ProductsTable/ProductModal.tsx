@@ -1,46 +1,32 @@
-import { Button, Label, Modal, TextInput } from "flowbite-react";
-import { useEffect, useState } from "react";
+import React, { useState, FormEvent, ChangeEvent } from "react";
+import { Modal, Label, TextInput, Button } from "flowbite-react";
+import { useMutation, useQueryClient } from "react-query";
 import { supabase } from "../../../supabaseClient";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { fetchProducts } from "../../../APIServices/APIServices";
+import { Product } from "../../../types/Product";
 
-const ProductModal = ({ openModal, onCloseModal, product }) => {
-  const [formData, setFormData] = useState({
-    name: "",
-    color: "",
-    category: "",
-    price: "",
+interface ProductModalProps {
+  openModal: boolean;
+  onCloseModal: () => void;
+  product: Product | null;
+}
+
+const ProductModal: React.FC<ProductModalProps> = ({
+  openModal,
+  onCloseModal,
+  product,
+}) => {
+  const [formData, setFormData] = useState<Product>({
+    id: product?.id || 0,
+    name: product?.name || "",
+    color: product?.color || "",
+    category: product?.category || "",
+    price: product?.price || 0,
   });
+
   const queryClient = useQueryClient();
 
-  useEffect(() => {
-    if (product) {
-      setFormData({
-        name: product.name,
-        color: product.color,
-        category: product.category,
-        price: product.price,
-      });
-    } else {
-      setFormData({
-        name: "",
-        color: "",
-        category: "",
-        price: "",
-      });
-    }
-  }, [product, openModal]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
   const createProduct = useMutation(
-    async (newProduct) => {
+    async (newProduct: Omit<Product, "id">) => {
       const { error } = await supabase
         .from("apple_products")
         .insert(newProduct);
@@ -57,7 +43,7 @@ const ProductModal = ({ openModal, onCloseModal, product }) => {
   );
 
   const updateProduct = useMutation(
-    async (updatedProduct) => {
+    async (updatedProduct: Product) => {
       const { error } = await supabase
         .from("apple_products")
         .update(updatedProduct)
@@ -74,13 +60,18 @@ const ProductModal = ({ openModal, onCloseModal, product }) => {
     }
   );
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (product) {
       updateProduct.mutate({ ...formData, id: product.id });
     } else {
       createProduct.mutate(formData);
     }
+  };
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -97,7 +88,6 @@ const ProductModal = ({ openModal, onCloseModal, product }) => {
               placeholder="Apple"
               value={formData.name}
               onChange={handleChange}
-              required
             />
           </div>
           <div>
@@ -106,10 +96,9 @@ const ProductModal = ({ openModal, onCloseModal, product }) => {
             </div>
             <TextInput
               name="color"
-              placeholder="Blue"
+              placeholder="Red"
               value={formData.color}
               onChange={handleChange}
-              required
             />
           </div>
           <div>
@@ -118,10 +107,9 @@ const ProductModal = ({ openModal, onCloseModal, product }) => {
             </div>
             <TextInput
               name="category"
-              placeholder="Mobile"
+              placeholder="Fruit"
               value={formData.category}
               onChange={handleChange}
-              required
             />
           </div>
           <div>
@@ -130,14 +118,14 @@ const ProductModal = ({ openModal, onCloseModal, product }) => {
             </div>
             <TextInput
               name="price"
-              placeholder="0"
+              type="number"
+              placeholder="1.00"
               value={formData.price}
               onChange={handleChange}
-              required
             />
           </div>
-          <Button className="col-span-2" type="submit" color="blue">
-            Submit
+          <Button color="blue" type="submit">
+            Save
           </Button>
         </form>
       </Modal.Body>
